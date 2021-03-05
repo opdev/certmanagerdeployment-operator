@@ -7,6 +7,7 @@ several changes to ensure it's able to deploy that release successfully.
 
 **Diff the previously supported version's release assets against the latest
 release assets to look for changes.**
+[See example workflow](diff-manifests.md)
 
 * The operator rolls out these assets programmatically, so any changes across
 eassets from different versions need to be accounted for programmatically.
@@ -47,7 +48,6 @@ and directly restricts a user's ability to request an unsupported version.
 * This is always the latest version, and is what's deployed if the user does not
 specify a version.
 
-
 * Update `GetComponentFor*` Func for each component.
   
 * Each component type contains metadata informing how the various secondary
@@ -70,7 +70,7 @@ for.
 versions in `api/v1alpha1/certmanagerdeployment_types.go`**
 
 * This ensures that the generated CustomResourceDefinition has proper validation
-preventing creation of a CertManagerDeployment with an incorrect version. 
+preventing creation of a CertManagerDeployment with an incorrect version.
 
 **Update `config/samples/operators_v1alpha1_certmanagerdeployment.yaml` such
 that it deploys the latest version**
