@@ -12,7 +12,15 @@ development. Use at your own risk.
 
 ## Usage
 
-TODO
+From a local copy of this repository:
+
+```bash
+make install
+OPFLAGS=--enable-pod-refresh make run
+```
+
+OpenShift and Kubernetes clusters running Operator Lifecycle Manager can install
+this operator by creating an operator group and subscription in your cluster.
 
 ## Upstream
 
