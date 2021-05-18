@@ -22,11 +22,11 @@ make OPFLAGS=--enable-podrefresher run
 Clean up from any previous executions if necessary (or skip otherwise).
 
 ```bash
-./hack/bin/test-cleanup.sh
+./scripts/bin/test-cleanup.sh
 ```
 
 Run the tests.
 
 ```bash
-./hack/bin/test-run.sh
+./scripts/bin/test-run.sh
 ```

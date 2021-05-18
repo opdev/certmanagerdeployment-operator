@@ -35,9 +35,9 @@ this is with `git diff`.
 * In order for the files to be properly diffed, they'll need to be sorted and
 be matching (otherwise, we're comparing manifests for different resources which,
 of course, will not match). An easy to to do this is to use
-`./hack/compare-yaml-names.sh` to perform the separate directories.
+`./scripts/compare-yaml-names.sh` to perform the separate directories.
 
-  * E.g. `./hack/compare-yaml-names.sh cert-manager-v1.2.0/ cert-manager-v1.1.0`
+  * E.g. `./scripts/compare-yaml-names.sh cert-manager-v1.2.0/ cert-manager-v1.1.0`
 
 * Sort the files that are out of order so that matching resources are in
 matching enmumerated files.
