@@ -227,12 +227,12 @@ This describes how the existing state of this resource is brought closer to the
 desired state. These are methods bound to the `CertManagerDeployment` type which
 gives them access to clients, loggers, and eventers to perform their task.
 
-* **Accessor function** `*ResourceGetter.Get<Resources>(...)`
+* **Accessor function** `Get<Resources>(...)`
 
 This describes what exact resources of this kind should the reconciler need to
-create/reconcile. These are methods bound to the `ResourceGetter` type, which
-stores the existing instance of the CertManagerDeployment to help inform how
-secondary resources should look.
+create/reconcile. These functions accept the current state of the given
+`CertManagerDeployment` and return the requested `<Resources>` for all
+Cert-Manager components.
 
 * **Generator functions** `new<Resource>(...)`
 
