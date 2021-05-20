@@ -1,0 +1,6 @@
+apiVersion: operators.opdev.io/v1alpha1
+kind: CertManagerDeployment
+metadata:
+  name: cluster
+spec:
+  version: "v1.3.1"
