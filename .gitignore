@@ -28,3 +28,6 @@ testbin/
 
 # Nobody likes DS_Store
 .DS_Store
+
+# Just go things
+*.coverprofile
