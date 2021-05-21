@@ -59,6 +59,7 @@ type CertManagerDeploymentReconciler struct {
 // +kubebuilder:rbac:groups=admissionregistration.k8s.io,resources=mutatingwebhookconfigurations/finalizers;validatingwebhookconfigurations/finalizers,verbs=update;
 // +kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles/finalizers;rolebindings/finalizers;clusterroles/finalizers;clusterrolebindings/finalizers,verbs=update;
 // +kubebuilder:rbac:groups=apps,resources=deployments/finalizers,verbs=update;
+// +kubebuilder:rbac:groups=coordination.k8s.io,resources=leases,verbs=get;list;create;update
 
 // Reconcile compares the desired state of CertManagerDeployment custom resources and works to get
 // the existing state to match the desired state.
