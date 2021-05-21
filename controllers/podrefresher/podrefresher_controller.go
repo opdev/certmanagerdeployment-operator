@@ -67,7 +67,7 @@ type PodRefreshReconciler struct {
 
 // Reconcile watches for secrets and if a secret is a certmanager secret, it checks for deployments, statefulsets,
 // and daemonsets that may be using the secret and triggers a re-rollout of those objects.
-func (r *PodRefreshReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *PodRefreshReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
 	_ = r.Log.WithValues("secret", req.NamespacedName)
 
@@ -335,7 +335,7 @@ type isCertManagerIssuedTLSPredicate struct{}
 // `cert-manager.io/issuer-kind` which helps identify that it is cert-manager issued.
 // Intended to be used with secrets.
 func (isCertManagerIssuedTLSPredicate) Update(e event.UpdateEvent) bool {
-	a := e.MetaNew.GetAnnotations()
+	a := e.ObjectNew.GetAnnotations()
 	_, isCertManagerIssued := a[issuerKindAnnotation]
 	return isCertManagerIssued
 }
@@ -344,7 +344,7 @@ func (isCertManagerIssuedTLSPredicate) Update(e event.UpdateEvent) bool {
 // `cert-manager.io/issuer-kind` which helps identify that it is cert-manager issued.
 // Intended to be used with secrets.
 func (isCertManagerIssuedTLSPredicate) Create(e event.CreateEvent) bool {
-	a := e.Meta.GetAnnotations()
+	a := e.Object.GetAnnotations()
 	_, isCertManagerIssued := a[issuerKindAnnotation]
 	return isCertManagerIssued
 }

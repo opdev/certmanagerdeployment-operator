@@ -1,22 +1,25 @@
 # Current Operator version
 VERSION ?= 0.0.1
-# Default bundle image tag
-BUNDLE_IMG ?= controller-bundle:$(VERSION)
+BUNDLE_VERSION ?= $(VERSION)
+
 # Options for 'bundle-build'
 ifneq ($(origin CHANNELS), undefined)
 BUNDLE_CHANNELS := --channels=$(CHANNELS)
 endif
+
 ifneq ($(origin DEFAULT_CHANNEL), undefined)
 BUNDLE_DEFAULT_CHANNEL := --default-channel=$(DEFAULT_CHANNEL)
 endif
 BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
+# Default bundle image tag
+BUNDLE_IMG ?= controller-bundle:$(BUNDLE_VERSION)
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
+
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
-# Namespace to use when running via PackageManifests
-PM_NAMESPACE ?= default
+
 # Project name used for git tagging
 PROJECT_NAME ?= operator
 
@@ -141,18 +144,6 @@ bundle: manifests
 .PHONY: bundle-build
 bundle-build:
 	docker build -f bundle.Dockerfile -t $(BUNDLE_IMG) .
-
-# Generate packagemanifests
-.PHONY: packagemanifests
-packagemanifests: 
-	operator-sdk generate kustomize manifests -q
-	cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG)
-	$(KUSTOMIZE) build config/manifests | operator-sdk generate packagemanifests --version $(VERSION)
-
-# Run using packagemanifests
-.PHONY: run-packagemanifests
-run-packagemanifests:
-	operator-sdk run packagemanifests packagemanifests --version $(VERSION) --install-mode SingleNamespace=$(PM_NAMESPACE)
 
 # Create a git tag
 .PHONY: git-tag

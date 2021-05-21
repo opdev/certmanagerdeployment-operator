@@ -1,1 +1,1 @@
-operator-sdk version: "v1.3.0", commit: "1abf57985b43bf6a59dcd18147b3c574fa57d3f6", kubernetes version: "1.19.4", go version: "go1.15.5", GOOS: "darwin", GOARCH: "amd64"
+operator-sdk version: "v1.7.2", commit: "6db9787d4e9ff63f344e23bfa387133112bda56b", kubernetes version: "1.19.4", go version: "go1.15.5", GOOS: "darwin", GOARCH: "amd64"

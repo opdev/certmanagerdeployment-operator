@@ -214,7 +214,7 @@ func (r *CertManagerDeploymentReconciler) reconcileStatusDeploymentsHealthy(
 		Message: "Deployment available and ready pods matches desired.",
 	}
 
-	existingDeploys, ok := queryAPIForExpectedDeployments(r, instance, reqLogger)
+	existingDeploys, ok := queryAPIForExpectedDeployments(r.Client, instance, reqLogger)
 	if existingDeploys == nil {
 		reqLogger.Info("unable to determine status of expected deployments for this instance")
 	}
@@ -246,7 +246,7 @@ func (r *CertManagerDeploymentReconciler) reconcileStatusCRDsHealthy(
 		Reason:  "AllCRDsHealthy",
 		Message: "CRDs NamesAccepted and Established Conditions are true.",
 	}
-	existingCRDs, ok := queryAPIForExpectedCRDs(r, instance, reqLogger)
+	existingCRDs, ok := queryAPIForExpectedCRDs(r.Client, instance, reqLogger)
 	if existingCRDs == nil {
 		reqLogger.Info("unable to determine status of expected CRDs for this instance")
 	}

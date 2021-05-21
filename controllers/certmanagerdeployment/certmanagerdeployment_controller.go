@@ -62,7 +62,7 @@ type CertManagerDeploymentReconciler struct {
 
 // Reconcile compares the desired state of CertManagerDeployment custom resources and works to get
 // the existing state to match the desired state.
-func (r *CertManagerDeploymentReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *CertManagerDeploymentReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = context.Background()
 	_ = r.Log.WithValues("certmanagerdeployment", req.NamespacedName)
 
