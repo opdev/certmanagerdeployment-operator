@@ -1,0 +1,49 @@
+name: Run E2E Tests against KinD
+
+# This workflow effectively runs `make test`
+# against a new KinD cluster.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  run_all_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create local copy of source code
+        uses: actions/checkout@v2
+        
+      - name: Setup golang environment
+        run: |
+          go mod tidy
+          go mod download
+          
+      - name: Install ginkgo and add it to path
+        run: |
+          export GOBIN="$(go env GOPATH)/bin"
+          mkdir -p "$GOBIN"
+          go get -u -v github.com/onsi/ginkgo/ginkgo
+          mkdir "$HOME/bin"
+          cp -a "$GOBIN/ginkgo" "$HOME/bin/ginkgo"
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Create a KinD cluster
+        uses: engineerd/setup-kind@v0.5.0
+
+      - name: Install the custom resource definition
+        run: |
+          make install
+
+      - name: Run the operator in the background
+        run: |
+          go run main.go --enable-pod-refresher &> controller.log &
+
+      - name: Run all tests
+        env:
+          USE_EXISTING_CLUSTER: "true"
+        run: make test
+
+      - name: Show controller logs
+        run: cat controller.log
+
