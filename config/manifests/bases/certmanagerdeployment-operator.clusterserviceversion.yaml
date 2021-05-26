@@ -1,0 +1,70 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+  name: certmanagerdeployment-operator.v0.0.0
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: CertManagerDeployment is the Schema for the certmanagerdeployments API
+      displayName: Cert-Manager Deployment
+      kind: CertManagerDeployment
+      name: certmanagerdeployments.operators.opdev.io
+      resources:
+      - kind: CustomResourceDefinition
+        name: certificaterequests.cert-manager.io
+        version: v1
+      - kind: CustomResourceDefinition
+        name: certificates.cert-manager.io
+        version: v1
+      - kind: CustomResourceDefinition
+        name: challenges.acme.cert-manager.io
+        version: v1
+      - kind: CustomResourceDefinition
+        name: clusterissuers.cert-manager.io
+        version: v1
+      - kind: CustomResourceDefinition
+        name: issuers.cert-manager.io
+        version: v1
+      - kind: CustomResourceDefinition
+        name: orders.acme.cert-manager.io
+        version: v1
+      version: v1alpha1
+  description: Manage your Cert-Manager installation alongside complementary controllers in OpenShift
+  displayName: Cert-Manager Deployment Operator
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: null
+    strategy: ""
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - cert-manager
+  - tls
+  - podrefresh
+  - workloadrefresh
+  links:
+  - name: Certmanagerdeployment Operator
+    url: https://certmanagerdeployment-operator.domain
+  maintainers:
+  - email: josegonzalez89@gmail.com
+    name: Jose R. Gonzalez
+  maturity: alpha
+  provider:
+    name: The OpDev Team
+    url: https://github.com/opdev/
+  version: 0.0.0
