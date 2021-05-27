@@ -12,17 +12,38 @@ development. Use at your own risk.
 
 ## Usage
 
-From a local copy of this repository:
+The easiest way to run this operator is to install the operator-specific catalog
+in your OpenShift cluster.
+
+```bash
+oc apply -f - <<EOF
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: certmanagerdeployment-operator
+spec:
+  displayName: CertManagerDeployment Operator Index
+  image: quay.io/opdev/certmanagerdeployment-operator-index:latest
+  priority: -200
+  publisher: The OpDev Team
+  sourceType: grpc
+  updateStrategy:
+    registryPoll:
+      interval: 30m0s
+EOF
+```
+
+With this catalog installed, you can then navigate to the embedded Operator
+Hub and subscribe to the operator.
+
+To test using a local copy of the source code, use the following Make target:
 
 ```bash
 make install
-OPFLAGS=--enable-pod-refresh make run
+OPFLAGS=--enable-pod-refresher make run
 ```
 
-OpenShift and Kubernetes clusters running Operator Lifecycle Manager can install
-this operator by creating an operator group and subscription in your cluster.
-
-## Upstream
+## Important
 
 This project does not change the functionality of Cert-Manager itself, and has
 **no direct association** with Cert-Manager project
