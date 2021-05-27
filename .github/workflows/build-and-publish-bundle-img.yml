@@ -1,11 +1,11 @@
-name: Publish Operator Bundle Image to Quay
+name: Publish Operator Bundle and Index Image to Quay
 on:  
   push:
     tags:
       - '*'
   workflow_dispatch:
 jobs:
-  build-and-publish:
+  build-and-publish-bundle:
     # Skip tags not associated with the main branch
     if: github.event.base_ref == 'refs/heads/main'
     env:
@@ -32,6 +32,51 @@ jobs:
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ env.NAMESPACE }}/${{ env.IMAGE }}
+          tags: ${{ env.RELEASE_TAG }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_QUAY_USER_NAME }}
+          password: ${{ secrets.REGISTRY_QUAY_TOKEN }}
+  build-and-publish-index:
+    # Skip tags not associated with the main branch
+    if: github.event.base_ref == 'refs/heads/main'
+    env:
+      REGISTRY: quay.io
+      NAMESPACE: opdev
+      BUNDLE_IMAGE: certmanagerdeployment-operator-bundle
+      INDEX_IMAGE: certmanagerdeployment-operator-index
+      OPM_DOWNLOAD_URL: 'https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest-4.7/opm-linux.tar.gz'
+    runs-on: ubuntu-latest
+    needs: build-and-publish-bundle
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get tag reference from environment
+        # TODO: consider using `git tag --points-at HEAD`
+        run: |
+          echo RELEASE_TAG=$(echo $GITHUB_REF | cut -d '/' -f 3) >> $GITHUB_ENV
+
+      - name: Install opm and add it to path
+        run: |
+          mkdir "$HOME/bin"
+          wget ${{ env.OPM_DOWNLOAD_URL }} -O opm.tar.gz
+          tar xzvf opm.tar.gz
+          chmod +x opm
+          mv opm $HOME/bin/
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Add the new bundle to the existing latest index
+        # TODO: this relies on accurately managing the latest tag
+        # over time. would be better if we could determine the previous
+        # tag and add the new bundle to the previous index and push that.
+        run: |
+          opm version
+          opm index add --container-tool podman --from-index ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.INDEX_IMAGE }}:latest --bundles ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.BUNDLE_IMAGE }}:${{ env.RELEASE_TAG }} -t ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.INDEX_IMAGE }}:${{ env.RELEASE_TAG }}
+
+      - name: Publish index image to registry
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          # We do not tag latest here. That must be done manually.
+          image: ${{ env.NAMESPACE }}/${{ env.INDEX_IMAGE }}
           tags: ${{ env.RELEASE_TAG }}
           registry: ${{ env.REGISTRY }}
           username: ${{ secrets.REGISTRY_QUAY_USER_NAME }}
