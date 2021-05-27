@@ -1,11 +1,42 @@
-name: Publish Operator Bundle and Index Image to Quay
+name: Publish operator, bundle, and index images to Quay
 on:  
   push:
     tags:
       - '*'
   workflow_dispatch:
 jobs:
-  build-and-publish-bundle:
+  controller:
+    # Skip tags not associated with the main branch
+    if: github.event.base_ref == 'refs/heads/main'
+    env:
+      REGISTRY: quay.io
+      NAMESPACE: opdev
+      IMAGE: certmanagerdeployment-operator
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get tag reference from environment
+        # TODO: consider using `git tag --points-at HEAD`
+        run: |
+          echo RELEASE_TAG=$(echo $GITHUB_REF | cut -d '/' -f 3) >> $GITHUB_ENV
+          
+      - name: Build and tag container image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ env.IMAGE }}
+          tags: ${{ env.RELEASE_TAG }}
+          dockerfiles: ./Dockerfile
+
+      - name: Publish container image to registry
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ env.NAMESPACE }}/${{ env.IMAGE }}
+          tags: ${{ env.RELEASE_TAG }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.REGISTRY_QUAY_USER_NAME }}
+          password: ${{ secrets.REGISTRY_QUAY_TOKEN }}
+  bundle:
     # Skip tags not associated with the main branch
     if: github.event.base_ref == 'refs/heads/main'
     env:
@@ -13,6 +44,7 @@ jobs:
       NAMESPACE: opdev
       IMAGE: certmanagerdeployment-operator-bundle
     runs-on: ubuntu-latest
+    needs: controller
     steps:
       - uses: actions/checkout@v2
 
@@ -36,7 +68,7 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ secrets.REGISTRY_QUAY_USER_NAME }}
           password: ${{ secrets.REGISTRY_QUAY_TOKEN }}
-  build-and-publish-index:
+  index:
     # Skip tags not associated with the main branch
     if: github.event.base_ref == 'refs/heads/main'
     env:
@@ -46,7 +78,7 @@ jobs:
       INDEX_IMAGE: certmanagerdeployment-operator-index
       OPM_DOWNLOAD_URL: 'https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/latest-4.7/opm-linux.tar.gz'
     runs-on: ubuntu-latest
-    needs: build-and-publish-bundle
+    needs: bundle
     steps:
       - uses: actions/checkout@v2
 
