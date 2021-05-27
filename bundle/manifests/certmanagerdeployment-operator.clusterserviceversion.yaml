@@ -18,7 +18,7 @@ metadata:
     capabilities: Basic Install
     operators.operatorframework.io/builder: operator-sdk-v1.7.1+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v2
-  name: certmanagerdeployment-operator.v0.0.1-alpha2
+  name: certmanagerdeployment-operator.v0.0.1-alpha3
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -272,7 +272,7 @@ spec:
                 - --enable-leader-election
                 command:
                 - /manager
-                image: quay.io/opdev/certmanagerdeployment-operator:v0.0.1-alpha2
+                image: quay.io/opdev/certmanagerdeployment-operator:v0.0.1-alpha3
                 name: manager
                 resources:
                   limits:
@@ -333,9 +333,9 @@ spec:
     url: https://certmanagerdeployment-operator.domain
   maintainers:
   - email: josegonzalez89@gmail.com
-    name: joseg
+    name: Jose R. Gonzalez
   maturity: alpha
   provider:
     name: The OpDev Team
     url: https://github.com/opdev/
-  version: 0.0.1-alpha2
+  version: 0.0.1-alpha3
